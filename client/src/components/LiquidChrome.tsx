@@ -1,92 +1,132 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
+import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
 
-/**
- * LiquidChrome Component
- * Adapted from React Bits (https://reactbits.dev/backgrounds/liquid-chrome)
- */
-export function LiquidChrome() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+const vert = `
+  attribute vec2 uv;
+  attribute vec2 position;
+
+  varying vec2 vUv;
+
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position, 0, 1);
+  }
+`;
+
+const frag = `
+  precision highp float;
+
+  varying vec2 vUv;
+  uniform float uTime;
+  uniform vec3 uBaseColor;
+  uniform float uSpeed;
+  uniform float uAmplitude;
+  uniform float uFrequencyX;
+  uniform float uFrequencyY;
+
+  void main() {
+    vec2 uv = vUv;
+    float time = uTime * uSpeed;
+    
+    // Create liquid distortion
+    float noise = sin(uv.x * uFrequencyX + time) * cos(uv.y * uFrequencyY + time) * uAmplitude;
+    float noise2 = cos(uv.x * uFrequencyY - time * 0.5) * sin(uv.y * uFrequencyX + time * 0.7) * uAmplitude * 0.5;
+    
+    vec3 color = uBaseColor + vec3(noise + noise2);
+    
+    // Add some chrome-like highlights
+    float highlight = pow(max(0.0, noise + noise2 + 0.5), 3.0) * 0.2;
+    color += highlight;
+
+    gl_FragColor = vec4(color, 1.0);
+  }
+`;
+
+interface LiquidChromeProps {
+  baseColor?: [number, number, number];
+  speed?: number;
+  amplitude?: number;
+  frequencyX?: number;
+  frequencyY?: number;
+  interactive?: boolean;
+}
+
+export function LiquidChrome({
+  baseColor = [0.35, 0.48, 0.38], // Matcha #5B7C62 as float
+  speed = 0.5,
+  amplitude = 0.2,
+  frequencyX = 2.0,
+  frequencyY = 1.0,
+  interactive = true,
+}: LiquidChromeProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!containerRef.current) return;
 
-    let animationFrameId: number;
-    let time = 0;
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({ alpha: true, antialias: true });
+    } catch (e) {
+      console.error("WebGL not supported");
+      return;
+    }
+
+    const gl = renderer.gl;
+    if (!gl) return;
+
+    containerRef.current.appendChild(gl.canvas);
+
+    const geometry = new Triangle(gl);
+
+    const program = new Program(gl, {
+      vertex: vert,
+      fragment: frag,
+      uniforms: {
+        uTime: { value: 0 },
+        uBaseColor: { value: new Color(...baseColor) },
+        uSpeed: { value: speed },
+        uAmplitude: { value: amplitude },
+        uFrequencyX: { value: frequencyX },
+        uFrequencyY: { value: frequencyY },
+      },
+    });
+
+    const mesh = new Mesh(gl, { geometry, program });
+
+    let animationFrame: number;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      if (!containerRef.current) return;
+      const width = containerRef.current.offsetWidth;
+      const height = containerRef.current.offsetHeight;
+      renderer.setSize(width, height);
     };
-    window.addEventListener("resize", resize);
+
+    window.addEventListener('resize', resize);
     resize();
 
-    const draw = () => {
-      time += 0.005;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // We'll create a "liquid" effect using overlapping gradients and sine waves
-      // Matcha: #5B7C62, Stone: #F2F0EB
-      
-      const width = canvas.width;
-      const height = canvas.height;
-
-      // Base layer
-      ctx.fillStyle = "#F2F0EB";
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.globalCompositeOperation = "multiply";
-      ctx.globalAlpha = 0.6;
-
-      // Liquid layer 1 (Matcha)
-      const grad1 = ctx.createRadialGradient(
-        width * (0.5 + Math.sin(time * 0.5) * 0.2),
-        height * (0.5 + Math.cos(time * 0.3) * 0.2),
-        0,
-        width * 0.5,
-        height * 0.5,
-        width * 0.8
-      );
-      grad1.addColorStop(0, "#5B7C62");
-      grad1.addColorStop(1, "transparent");
-      ctx.fillStyle = grad1;
-      ctx.fillRect(0, 0, width, height);
-
-      // Liquid layer 2 (Darker Matcha)
-      const grad2 = ctx.createRadialGradient(
-        width * (0.3 + Math.cos(time * 0.4) * 0.3),
-        height * (0.7 + Math.sin(time * 0.2) * 0.3),
-        0,
-        width * 0.3,
-        height * 0.7,
-        width * 0.6
-      );
-      grad2.addColorStop(0, "#4A6651");
-      grad2.addColorStop(1, "transparent");
-      ctx.fillStyle = grad2;
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.globalCompositeOperation = "source-over";
-      ctx.globalAlpha = 1.0;
-
-      animationFrameId = requestAnimationFrame(draw);
+    const update = (t: number) => {
+      animationFrame = requestAnimationFrame(update);
+      program.uniforms.uTime.value = t * 0.001;
+      renderer.render({ scene: mesh });
     };
 
-    draw();
+    animationFrame = requestAnimationFrame(update);
 
     return () => {
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationFrame);
+      if (containerRef.current && gl.canvas.parentNode === containerRef.current) {
+        containerRef.current.removeChild(gl.canvas);
+      }
     };
-  }, []);
+  }, [baseColor, speed, amplitude, frequencyX, frequencyY]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full -z-10"
-      style={{ filter: "blur(40px) contrast(120%)" }}
+    <div
+      ref={containerRef}
+      className="absolute inset-0 w-full h-full -z-10 bg-[#F2F0EB]"
     />
   );
 }
