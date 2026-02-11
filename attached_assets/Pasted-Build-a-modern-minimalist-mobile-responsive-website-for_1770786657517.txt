@@ -1,0 +1,49 @@
+Build a modern, minimalist, mobile-responsive website for a D2C lifestyle and grooming brand called "Tenzo". 
+
+The design should feel like "Muji meets Apple"—clean, zen, and essential.
+
+### TECH STACK & COMPONENTS:
+- React + Tailwind CSS + Lucide Icons.
+- UI Library: Shadcn UI (for Buttons, Cards, Inputs).
+- **HERO BACKGROUND:** Use the "@react-bits/ColorBends-JS-CSS" component. Configure the colors of the bends to match my brand palette below (Green, Grey, and White).
+
+### BRAND THEME & COLORS:
+- **Primary (Matcha):** #5B7C62
+- **Background (Stone Grey):** #F2F0EB
+- **Text (Sumi Ink):** #2D2D2D
+- **Accent (Sunset Clay):** #D17D59
+- **Fonts:** Use a clean Sans-Serif (like Montserrat for headings, Inter for body).
+
+### PAGE STRUCTURE:
+
+**1. HERO SECTION (Full Screen)**
+- Background: The ColorBends animation using #5B7C62 and #F2F0EB.
+- Center Content:
+  - Logo Text: "TENZO" (Bold, tracking-wide).
+  - Subtitle: "Essential Living. Curating the best grooming & lifestyle gear for the modern Indian."
+  - Primary CTA Button: "Join the Community" (Links to Instagram).
+
+**2. "WHAT WE DO" SECTION (3-Column Grid)**
+- Use simple Card components with Icons.
+- Card 1: "We Curate" – "Hunting the best gear under ₹1000."
+- Card 2: "We Build" – "Designing premium essentials based on your feedback."
+- Card 3: "We Connect" – "A community of modern minimalists."
+
+**3. QUICK LINKS (Linktree Style)**
+- A section with wide, full-width buttons for mobile users.
+- Button 1: "📸 Follow on Instagram (@TenzoGoods)" (Outline style).
+- Button 2: "💬 Join WhatsApp Group" (Outline style).
+- Button 3: "🛒 Top 5 Amazon Finds" (Solid Accent color).
+
+**4. BLOG SECTION ("The Tenzo Edit")**
+- Header: "The Journal".
+- Display a grid of 3 placeholder blog posts.
+- Example Post: Image placeholder, Category tag "Grooming", Title "5 Trimmers Under ₹1000 That Actually Last", and a "Read More" arrow.
+
+**5. FOOTER**
+- Simple text: "Designed in India. © 2026 Tenzo."
+- Small links: Contact, Privacy.
+
+### BEHAVIOR:
+- Ensure the ColorBends background is subtle and slow-moving so text remains readable.
+- Make sure the "Quick Links" section is very easy to tap on mobile.
