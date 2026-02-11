@@ -1,5 +1,5 @@
 import { Navigation } from "@/components/Navigation";
-import { ColorBends } from "@/components/ColorBends";
+import { LiquidChrome } from "@/components/LiquidChrome";
 import { CreatePostDialog } from "@/components/CreatePostDialog";
 import { usePosts } from "@/hooks/use-posts";
 import { motion } from "framer-motion";
@@ -28,7 +28,7 @@ export default function Home() {
       
       {/* 1. HERO SECTION */}
       <section className="relative h-screen flex flex-col items-center justify-center px-6">
-        <ColorBends />
+        <LiquidChrome />
         
         <motion.div 
           initial="hidden"
