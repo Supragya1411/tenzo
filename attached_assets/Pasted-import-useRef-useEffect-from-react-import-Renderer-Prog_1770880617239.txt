@@ -12,24 +12,15 @@ export const LiquidChrome = ({
   interactive = true,
   ...props
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
-    let renderer: Renderer;
-    try {
-      renderer = new Renderer({ antialias: true });
-    } catch (e) {
-      console.error("WebGL not supported");
-      return;
-    }
-    
+    const renderer = new Renderer({ antialias: true });
     const gl = renderer.gl;
-    if (!gl) return;
-    
-    gl.clearColor(0.1, 0.1, 0.1, 1);
+    gl.clearColor(1, 1, 1, 1);
 
     const vertexShader = `
       attribute vec2 position;
@@ -98,14 +89,14 @@ export const LiquidChrome = ({
         uAmplitude: { value: amplitude },
         uFrequencyX: { value: frequencyX },
         uFrequencyY: { value: frequencyY },
-        uMouse: { value: new Float32Array([0.5, 0.5]) }
+        uMouse: { value: new Float32Array([0, 0]) }
       }
     });
     const mesh = new Mesh(gl, { geometry, program });
 
     function resize() {
-      if (!container) return;
-      renderer.setSize(container.offsetWidth, container.offsetHeight);
+      const scale = 1;
+      renderer.setSize(container.offsetWidth * scale, container.offsetHeight * scale);
       const resUniform = program.uniforms.uResolution.value;
       resUniform[0] = gl.canvas.width;
       resUniform[1] = gl.canvas.height;
@@ -114,8 +105,7 @@ export const LiquidChrome = ({
     window.addEventListener('resize', resize);
     resize();
 
-    function handleMouseMove(event: MouseEvent) {
-      if (!container) return;
+    function handleMouseMove(event) {
       const rect = container.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width;
       const y = 1 - (event.clientY - rect.top) / rect.height;
@@ -124,8 +114,8 @@ export const LiquidChrome = ({
       mouseUniform[1] = y;
     }
 
-    function handleTouchMove(event: TouchEvent) {
-      if (event.touches.length > 0 && container) {
+    function handleTouchMove(event) {
+      if (event.touches.length > 0) {
         const touch = event.touches[0];
         const rect = container.getBoundingClientRect();
         const x = (touch.clientX - rect.left) / rect.width;
@@ -141,8 +131,8 @@ export const LiquidChrome = ({
       container.addEventListener('touchmove', handleTouchMove);
     }
 
-    let animationId: number;
-    function update(t: number) {
+    let animationId;
+    function update(t) {
       animationId = requestAnimationFrame(update);
       program.uniforms.uTime.value = t * 0.001 * speed;
       renderer.render({ scene: mesh });

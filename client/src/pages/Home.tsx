@@ -28,7 +28,14 @@ export default function Home() {
       
       {/* 1. HERO SECTION */}
       <section className="relative h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
-        <LiquidChrome baseColor={[0.1, 0.1, 0.1]} speed={0.8} amplitude={0.5} />
+        <div className="absolute inset-0 w-full h-full -z-10">
+          <LiquidChrome
+            baseColor={[0.1, 0.1, 0.1]}
+            speed={1}
+            amplitude={0.6}
+            interactive={true}
+          />
+        </div>
         
         <motion.div 
           initial="hidden"
