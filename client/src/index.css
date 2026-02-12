@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,25 +8,25 @@
   --font-display: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
 
+  /* Deep Sumi Ink & Liquid Chrome Palette */
+  --background: 0 0% 12%;
+  --foreground: 0 0% 98%;
+
   /* Matcha (Primary) */
   --primary: 134 15% 42%;
   --primary-foreground: 0 0% 100%;
 
-  /* Stone Grey (Background) */
-  --background: 43 18% 94%;
-  --foreground: 0 0% 18%;
+  /* Stone Grey for Contrast */
+  --card: 0 0% 15%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 15%;
+  --popover-foreground: 0 0% 98%;
 
-  /* Card / Elevated surfaces */
-  --card: 43 18% 98%;
-  --card-foreground: 0 0% 18%;
-  --popover: 43 18% 98%;
-  --popover-foreground: 0 0% 18%;
-
-  /* Sumi Ink (Muted/Secondary) */
-  --muted: 43 10% 90%;
-  --muted-foreground: 0 0% 40%;
-  --secondary: 43 10% 90%;
-  --secondary-foreground: 0 0% 18%;
+  /* Muted surfaces */
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 60%;
+  --secondary: 0 0% 20%;
+  --secondary-foreground: 0 0% 98%;
 
   /* Sunset Clay (Accent) */
   --accent: 18 57% 58%;
@@ -35,11 +35,11 @@
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 43 10% 85%;
-  --input: 43 10% 85%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
   --ring: 134 15% 42%;
 
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -48,18 +48,16 @@
   }
   body {
     @apply bg-background text-foreground antialiased font-body;
-    background-color: hsl(var(--background)); /* Ensure specific BG color hits */
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight font-semibold;
+    @apply font-display tracking-tight font-bold;
   }
 }
 
-/* Custom Utilities for that "Zen" feel */
-.glass-panel {
-  @apply bg-white/60 backdrop-blur-md border border-white/40 shadow-sm;
+.glass-card {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
 }
 
-.text-balance {
-  text-wrap: balance;
+.chrome-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-br from-white via-white/80 to-white/40;
 }

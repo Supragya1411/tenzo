@@ -27,39 +27,38 @@ export default function Home() {
       <Navigation />
       
       {/* 1. HERO SECTION */}
-      <section className="relative h-screen flex flex-col items-center justify-center px-6">
-        <LiquidChrome />
+      <section className="relative h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+        <LiquidChrome baseColor={[0.1, 0.1, 0.1]} speed={0.8} amplitude={0.5} />
         
         <motion.div 
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
-          className="relative z-10 text-center max-w-4xl mx-auto space-y-8"
+          className="relative z-10 text-center max-w-5xl mx-auto space-y-12"
         >
           <motion.h1 
             variants={fadeInUp}
-            className="text-[15vw] md:text-[10rem] leading-[0.8] font-display font-bold tracking-tighter text-primary/90 mix-blend-overlay"
+            className="text-[18vw] md:text-[14rem] leading-[0.75] font-display font-black tracking-tighter chrome-text"
           >
             TENZO
           </motion.h1>
           
           <motion.p 
             variants={fadeInUp}
-            className="text-lg md:text-2xl font-light text-muted-foreground max-w-xl mx-auto text-balance"
+            className="text-xl md:text-3xl font-light text-white/70 max-w-2xl mx-auto text-balance leading-tight"
           >
-            Essential living for the modern creative. 
-            Curated spaces, mindful habits, and connection.
+            Essential Living. Curated for the modern Indian.
           </motion.p>
           
-          <motion.div variants={fadeInUp} className="pt-4">
+          <motion.div variants={fadeInUp} className="pt-8">
             <a 
               href="https://instagram.com" 
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center space-x-2 px-8 py-4 bg-foreground text-background rounded-full font-medium hover:bg-foreground/80 hover:scale-105 transition-all duration-300 shadow-xl"
+              className="inline-flex items-center space-x-3 px-10 py-5 bg-white text-black rounded-full font-bold hover:scale-105 transition-all duration-500 shadow-[0_0_40px_rgba(255,255,255,0.2)]"
             >
               <span>Join the Community</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-5 h-5" />
             </a>
           </motion.div>
         </motion.div>
